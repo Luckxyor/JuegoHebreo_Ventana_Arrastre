@@ -1,0 +1,497 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+  /* Previene zoom al tocar doble en móvil */
+  touch-action: manipulation;
+}
+
+/* ===== GAME CONTAINER ===== */
+#game-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+  gap: 10px;
+}
+
+/* ===== LEFT ZONE: CLIMATE CARDS ===== */
+#climate-zone {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 18px;
+  width: 32%;
+  height: 90%;
+  align-items: center;
+  justify-items: center;
+}
+
+.climate-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  border-radius: 24px;
+  border: 5px solid #ffe082;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  cursor: default;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  user-select: none;
+  padding: 10px;
+  /* Impide que el scroll de la página interfiera con el arrastre táctil */
+  touch-action: none;
+  -webkit-user-select: none;
+}
+
+.climate-card.draggable {
+  cursor: grab;
+  border-color: #42e695;
+  animation: pulse-card 1.5s ease-in-out infinite;
+}
+
+.climate-card.draggable:hover {
+  transform: scale(1.06);
+  box-shadow: 0 14px 36px rgba(0,0,0,0.22);
+  border-color: #0af;
+}
+
+.climate-card.dragging {
+  opacity: 0.30;
+  transform: scale(0.88);
+  animation: none;
+  cursor: grabbing;
+  filter: grayscale(0.4) brightness(0.85);
+  border-color: #aaa;
+  transition: opacity 0.15s ease, transform 0.15s ease, filter 0.15s ease;
+}
+
+.climate-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@keyframes pulse-card {
+  0%, 100% { box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+  50%       { box-shadow: 0 8px 32px rgba(66,230,149,0.55); }
+}
+
+/* ===== DRAG GHOST ===== */
+.drag-ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  pointer-events: none;
+  width: clamp(120px, 14vw, 200px);
+  height: clamp(120px, 14vw, 200px);
+  background: #fff;
+  border-radius: 28px;
+  border: 5px solid #00aaff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  will-change: transform;
+  animation: ghost-glow 1s ease-in-out infinite alternate;
+}
+
+.drag-ghost img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@keyframes ghost-glow {
+  0%   { box-shadow: 0 0 0  8px rgba(0,170,255,0.20), 0 0 35px rgba(0,170,255,0.35), 0 18px 50px rgba(0,0,0,0.22); }
+  100% { box-shadow: 0 0 0 14px rgba(0,220,255,0.38), 0 0 65px rgba(0,200,255,0.55), 0 24px 65px rgba(0,0,0,0.30); }
+}
+
+/* ===== CENTER ZONE: START BUTTON ===== */
+#center-zone {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 24%;
+  height: 90%;
+}
+
+#start-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: clamp(6rem, 11vw, 12rem);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter:
+    drop-shadow(0 6px 0px rgba(0,0,0,0.18))
+    drop-shadow(0 0 22px rgba(255,200,60,0.55));
+  animation: hand-reach 1.4s ease-in-out infinite;
+  transform-origin: bottom center;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  margin-left: 70%;
+}
+
+#start-btn:hover {
+  animation: none;
+  transform: translateX(32%) rotate(20deg) scale(1.12);
+  filter:
+    drop-shadow(0 8px 0px rgba(0,0,0,0.22))
+    drop-shadow(0 0 34px rgba(255,210,50,0.80));
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+#start-btn:active {
+  transform: translateX(42%) rotate(26deg) scale(1.05);
+  transition: transform 0.08s ease;
+}
+
+@keyframes hand-reach {
+  0%   { transform: translateX(0%)   rotate(-6deg) scale(1);    }
+  30%  { transform: translateX(22%)  rotate(14deg) scale(1.05); }
+  55%  { transform: translateX(28%)  rotate(18deg) scale(1.08); }
+  75%  { transform: translateX(16%)  rotate(10deg) scale(1.04); }
+  100% { transform: translateX(0%)   rotate(-6deg) scale(1);    }
+}
+
+#start-btn.hidden {
+  display: none;
+}
+
+/* ===== RIGHT ZONE: WINDOW ===== */
+#window-zone {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32%;
+  height: 90%;
+}
+
+#window-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#window-closed,
+#window-open {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  user-select: none;
+  pointer-events: none;
+}
+
+#window-closed {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+}
+
+#window-open {
+  opacity: 0;
+  transform: scale(0.92);
+  z-index: 1;
+}
+
+#window-wrapper.window-opened #window-closed {
+  opacity: 0;
+  transform: scale(1.04);
+}
+
+#window-wrapper.window-opened #window-open {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 3;
+}
+
+/* Imagen de clima dentro de la ventana al acertar */
+#answer-in-window {
+  position: absolute;
+  top: 28%;
+  left: 24%;
+  width: 51%;
+  height: 40%;
+  object-fit: contain;
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+  transform: scale(0.4) rotate(-10deg);
+}
+
+#answer-in-window.pop-in {
+  animation: answer-pop-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+#answer-in-window.pop-out {
+  animation: answer-pop-out 0.35s ease-in forwards;
+}
+
+@keyframes answer-pop-in {
+  0%   { opacity: 0; transform: scale(0.3) rotate(-15deg); }
+  60%  { opacity: 1; transform: scale(1.1) rotate(4deg); }
+  100% { opacity: 1; transform: scale(1)   rotate(0deg); }
+}
+
+@keyframes answer-pop-out {
+  0%   { opacity: 1; transform: scale(1)   rotate(0deg); }
+  100% { opacity: 0; transform: scale(0.4) rotate(10deg); }
+}
+
+/* DROP ZONE */
+#drop-zone {
+  position: absolute;
+  top: 15%;
+  left: 10%;
+  width: 80%;
+  height: 70%;
+  z-index: 10;
+  border-radius: 18px;
+  border: 5px dashed transparent;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+#drop-zone.drag-over {
+  border-color: #42e695;
+  background: rgba(66, 230, 149, 0.18);
+}
+
+/* ===== FEEDBACK OVERLAY ===== */
+#feedback {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  pointer-events: none;
+}
+
+#feedback.hidden {
+  display: none;
+}
+
+#feedback-icon {
+  font-size: clamp(8rem, 22vw, 22rem);
+  font-weight: 900;
+  line-height: 1;
+  filter: drop-shadow(0 8px 32px rgba(0,0,0,0.3));
+}
+
+/* CORRECT FEEDBACK */
+#feedback.correct {
+  background: rgba(0, 220, 100, 0.22);
+  animation: feedback-popup 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+#feedback.correct #feedback-icon {
+  color: #00c853;
+  text-shadow: 0 4px 20px rgba(0,200,83,0.7);
+  animation: spin-check 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* INCORRECT FEEDBACK */
+#feedback.incorrect {
+  background: rgba(255, 50, 50, 0.18);
+  animation: feedback-popup 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+#feedback.incorrect #feedback-icon {
+  color: #f44336;
+  text-shadow: 0 4px 20px rgba(244,67,54,0.7);
+  animation: shake-x 0.55s ease both;
+}
+
+@keyframes feedback-popup {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes spin-check {
+  0%   { transform: scale(0) rotate(-90deg); opacity: 0; }
+  60%  { transform: scale(1.15) rotate(10deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes shake-x {
+  0%   { transform: scale(0); opacity: 0; }
+  20%  { transform: scale(1.2) translateX(-18px); opacity: 1; }
+  40%  { transform: scale(1.1) translateX(18px); }
+  60%  { transform: scale(1.05) translateX(-12px); }
+  80%  { transform: scale(1.02) translateX(10px); }
+  100% { transform: scale(1) translateX(0); opacity: 1; }
+}
+
+/* ===== RESPONSIVE — siempre layout horizontal ===== */
+
+/* Tablet landscape */
+@media (max-width: 900px) {
+  #game-container {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  #climate-zone {
+    width: 30%;
+    gap: 10px;
+  }
+
+  #center-zone {
+    width: 16%;
+  }
+
+  #window-zone {
+    width: 46%;
+  }
+}
+
+/* Tablet portrait / teléfono landscape grande */
+@media (max-width: 768px) {
+  #game-container {
+    flex-direction: row;
+    padding: 8px;
+    gap: 6px;
+  }
+
+  #climate-zone {
+    width: 30%;
+    height: 78%;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .climate-card {
+    border-radius: 14px;
+    border-width: 4px;
+    padding: 6px;
+  }
+
+  #center-zone {
+    width: 14%;
+    height: 95%;
+  }
+
+  #start-btn {
+    font-size: clamp(3rem, 7vw, 6rem);
+  }
+
+  #window-zone {
+    width: 46%;
+    height: 95%;
+  }
+
+  #answer-in-window {
+    top: 29%;
+    left: 26%;
+    width: 44%;
+    height: 34%;
+  }
+
+  .drag-ghost {
+    width: clamp(90px, 16vw, 140px);
+    height: clamp(90px, 16vw, 140px);
+  }
+}
+
+/* Teléfono pequeño (portrait o landscape estrecho) */
+@media (max-width: 480px) {
+  #game-container {
+    flex-direction: row;
+    padding: 5px;
+    gap: 4px;
+  }
+
+  #climate-zone {
+    width: 28%;
+    height: 72%;
+    gap: 5px;
+  }
+
+  .climate-card {
+    border-radius: 10px;
+    border-width: 3px;
+    padding: 4px;
+  }
+
+  #center-zone {
+    width: 12%;
+    height: 98%;
+  }
+
+  #start-btn {
+    font-size: clamp(2rem, 8vw, 4rem);
+  }
+
+  #window-zone {
+    width: 50%;
+    height: 98%;
+  }
+
+  #answer-in-window {
+    top: 30%;
+    left: 27%;
+    width: 40%;
+    height: 30%;
+  }
+
+  .drag-ghost {
+    width: clamp(70px, 18vw, 110px);
+    height: clamp(70px, 18vw, 110px);
+  }
+}
+
+/* Altura muy baja (landscape con barra de navegador) */
+@media (max-height: 420px) {
+  #game-container {
+    padding: 4px;
+    gap: 4px;
+  }
+
+  #climate-zone {
+    gap: 4px;
+  }
+
+  .climate-card {
+    padding: 4px;
+  }
+
+  #start-btn {
+    font-size: clamp(2rem, 7vh, 4rem);
+  }
+}

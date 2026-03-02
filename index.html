@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="game-container">
+
+    <div id="climate-zone">
+      <div class="climate-card" data-type="sol" id="card-sol">
+        <img src="images/sol.png" alt="שמש" draggable="false" />
+      </div>
+      <div class="climate-card" data-type="lluvia" id="card-lluvia">
+        <img src="images/lluvia.png" alt="גשם" draggable="false" />
+      </div>
+      <div class="climate-card" data-type="nubes" id="card-nubes">
+        <img src="images/nubes.png" alt="עננים" draggable="false" />
+      </div>
+      <div class="climate-card" data-type="viento" id="card-viento">
+        <img src="images/viento.png" alt="רוח" draggable="false" />
+      </div>
+    </div>
+
+    <div id="center-zone">
+      <button id="start-btn" aria-label="התחל">🖐️</button>
+    </div>
+
+    <div id="window-zone">
+      <div id="window-wrapper">
+        <img id="window-closed" src="images/ventana_cerrada.png" alt="חלון סגור" />
+        <img id="window-open" src="images/VentanaAbierta.png" alt="חלון פתוח" />
+        <img id="answer-in-window" src="" alt="" />
+        <div id="drop-zone"></div>
+      </div>
+
+      <div id="feedback" class="hidden">
+        <span id="feedback-icon"></span>
+      </div>
+    </div>
+
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
